@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(120deg, #ff758c, #ff7eb3, #65c7f7, #6a11cb);
+            background-size: 300% 300%;
+            animation: gradientMove 12s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+
+        .scene {
+            display: none;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .scene.active {
+            display: flex;
+        }
+
+        .secret {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="text-white font-sans">
+
+<!-- AUDIO -->
+<audio id="bgMusic" src="bukti.mp3"></audio>
+
+<!-- SCENE 1 -->
+<div id="scene1" class="scene active">
+    <div class="glass p-8 rounded-xl text-center max-w-md mx-4">
+        <h1 class="text-3xl mb-4">Hai kamu…</h1>
+        <p class="text-sm mb-6 opacity-80">Ada sesuatu yang pengen aku tunjukin.</p>
+        <button id="startBtn" class="bg-pink-500 hover:bg-pink-600 px-6 py-2 rounded-full transition">
+            Klik pelan-pelan ya
+        </button>
+    </div>
+</div>
+
+<!-- SCENE 2 (EMOSIONAL) -->
+<div id="scene2" class="scene">
+    <div class="glass p-8 rounded-xl text-center max-w-md mx-4">
+        <p id="line1" class="text-xl mb-4 opacity-0">
+            Dari sekian banyak hal di hidup aku…
+        </p>
+        <p id="line2" class="text-xl mb-4 opacity-0">
+            kamu adalah salah satu hal terbaik yang pernah datang.
+        </p>
+        <p id="line3" class="text-sm opacity-0 italic">
+            (iya, ini tentang kamu, <span class="underline cursor-pointer" id="easterTrigger">[NAMA]</span>)
+        </p>
+
+        <div id="secretMessage" class="secret mt-4 text-sm text-pink-200">
+            aku mungkin jarang bilang, tapi kamu berarti banget buat aku 🤍
+        </div>
+
+        <button id="nextBtn2" class="mt-6 bg-pink-500 hover:bg-pink-600 px-6 py-2 rounded-full opacity-0">
+            lanjut…
+        </button>
+    </div>
+</div>
+
+<!-- SCENE 3 (MEMORY) -->
+<div id="scene3" class="scene">
+    <div class="glass p-8 rounded-xl text-center max-w-md mx-4">
+        <h2 class="text-2xl mb-4">Tentang kita</h2>
+
+        <p class="mb-3 opacity-0" id="mem1">
+            Aku masih inget <b>[KENANGAN 1]</b>
+        </p>
+        <p class="mb-3 opacity-0" id="mem2">
+            Terus momen <b>[KENANGAN 2]</b>
+        </p>
+        <p class="mb-3 opacity-0" id="mem3">
+            Dan semua hal kecil yang bikin aku senyum tanpa sadar
+        </p>
+
+        <button id="nextBtn3" class="mt-6 bg-pink-500 hover:bg-pink-600 px-6 py-2 rounded-full opacity-0">
+            satu hal terakhir
+        </button>
+    </div>
+</div>
+
+<!-- SCENE 4 (FINALE) -->
+<div id="scene4" class="scene">
+    <div class="glass p-8 rounded-xl text-center max-w-lg mx-4">
+        <h1 class="text-4xl mb-4">Selamat Ulang Tahun, [NAMA] 🎉</h1>
+        <p class="text-lg mb-4">
+            Semoga kamu selalu dikelilingi hal-hal baik, orang-orang tulus,
+            dan mimpi yang pelan-pelan jadi nyata.
+            Terima kasih udah hadir di hidup aku.
+        </p>
+        <p class="italic text-sm opacity-80">
+            — dari seseorang yang diam-diam selalu doain kamu
+        </p>
+    </div>
+</div>
+
+<script>
+let currentScene = 1;
+const music = document.getElementById("bgMusic");
+music.volume = 0.6;
+
+function goTo(sceneId) {
+    document.getElementById(`scene${currentScene}`).classList.remove("active");
+    document.getElementById(sceneId).classList.add("active");
+    currentScene = parseInt(sceneId.replace("scene",""));
+}
+
+// Scene 1 → Scene 2
+document.getElementById("startBtn").addEventListener("click", () => {
+    goTo("scene2");
+    music.play();
+
+    gsap.to("#line1", {opacity:1, duration:1, delay:0.5});
+    gsap.to("#line2", {opacity:1, duration:1, delay:2});
+    gsap.to("#line3", {opacity:1, duration:1, delay:3.5});
+    gsap.to("#nextBtn2", {opacity:1, duration:1, delay:5});
+});
+
+// Easter Egg
+document.getElementById("easterTrigger").addEventListener("click", () => {
+    document.getElementById("secretMessage").style.display = "block";
+});
+
+// Scene 2 → Scene 3
+document.getElementById("nextBtn2").addEventListener("click", () => {
+    goTo("scene3");
+
+    gsap.to("#mem1", {opacity:1, delay:0.5});
+    gsap.to("#mem2", {opacity:1, delay:1.5});
+    gsap.to("#mem3", {opacity:1, delay:2.5});
+    gsap.to("#nextBtn3", {opacity:1, delay:4});
+});
+
+// Scene 3 → Scene 4
+document.getElementById("nextBtn3").addEventListener("click", () => {
+    goTo("scene4");
+    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+});
+</script>
+
+</body>
+</html>
